@@ -1,5 +1,5 @@
 import uuid
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 app = Flask(__name__)
 
 
@@ -32,11 +32,16 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/<uuid>')
+@app.route('/<uuid>', methods=["GET", "POST"])
 def register(uuid):
 
+    if len(request.form) > 0:
+
+        return redirect("/")
+
+
     if uuid in global_uuids:
-        return "Invite link is valid"
+        return render_template("registration.html")
     else:
         return "Invite link isn't valid"
 
