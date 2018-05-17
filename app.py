@@ -1,18 +1,44 @@
+import uuid
 from flask import Flask, render_template, request
 app = Flask(__name__)
 
+
+global_uuids = []
+
 @app.route('/', methods=["GET","POST"])
-def hello_world():
+def index():
+
+
+
     if len(request.form) > 0:
+
+
+        if "email" in request.form:
+
+            random_uuid = uuid.uuid4()
+            print(random_uuid)
+            global_uuids.append(str(random_uuid))
+
+            return "Invite link sended"
+
+
         name = request.form["firstname"]
         lastname = request.form["lastname"]
         if name == "Andrey":
-            return render_template('Autorize.html', name=name, lastname=lastname)
+            return render_template('autorize.html', name=name, lastname=lastname)
         else:
-            render_template('index.html', tryagain=True)
+            return render_template('index.html', tryagain=True)
 
     return render_template('index.html')
 
+
+@app.route('/<uuid>')
+def register(uuid):
+
+    if uuid in global_uuids:
+        return "Invite link is valid"
+    else:
+        return "Invite link isn't valid"
 
 if __name__ == "__main__":
     app.run("localhost", 8000)
